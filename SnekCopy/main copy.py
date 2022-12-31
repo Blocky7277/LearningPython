@@ -4,8 +4,6 @@ from random import randrange
 from sys import exit
 
 offset = 6
-TILE_SIZE, TILE_NUM = 50, 20
-swipe = True
 
 class FRUIT:
     def __init__(self):
@@ -73,10 +71,7 @@ class MAIN:
     def __init__(self):
         self.state = "TITLE_SCREEN"
 
-        self.instuction_button = INSTRUCTIONS_BUTTON()
         self.start_button = START_BUTTON()
-        self.exit_button = EXIT_BUTTON()
-        self.intro_title_screen_button = TITLE_BUTTON(TILE_NUM*TILE_SIZE/2, TILE_SIZE*TILE_NUM/2 + 300)
         
         self.title_screen_button = TITLE_BUTTON()
         self.retry_button = PLAY_AGAIN_BUTTON()
@@ -96,16 +91,9 @@ class MAIN:
             self.update_title_screen()
         elif self.state == "GAME_OVER":
             self.update_game_over()
-        elif self.state == "INSTRUCTIONS":
-            self.update_instructions()
     
     def update_title_screen(self):
         self.start_button.check_click()
-        self.instuction_button.check_click()
-        self.exit_button.check_click()
-
-    def update_instructions(self):
-        self.intro_title_screen_button.check_click()
 
     def update_game_over(self):
         self.title_screen_button.check_click()
@@ -123,8 +111,6 @@ class MAIN:
             self.draw_game()
         elif self.state == "GAME_OVER":
             self.draw_game_over()
-        elif self.state == "INSTRUCTIONS":
-            self.draw_instructions()
 
     def draw_title_screen(self):
         title_surface = title_font.render("Welcome To Snek", True, 'white')
@@ -134,26 +120,12 @@ class MAIN:
         screen.blit(title_surface, title_rect)
 
         author_surface = score_font.render("By Blocky7277", True, 'white')
-        author_x = TILE_SIZE*TILE_NUM - 120
+        author_x = TILE_SIZE*TILE_NUM - 90
         author_y = TILE_SIZE*TILE_NUM - 20
         author_rect = author_surface.get_rect(center = (author_x, author_y))
         screen.blit(author_surface, author_rect)
 
         self.start_button.draw()
-        self.instuction_button.draw()
-        self.exit_button.draw()
-
-    def draw_instructions(self):
-        instructions_surface = score_font.render("Swipe anywhere within the play area in the direction", True, 'white')
-        instructions_surface2 = score_font.render("you want to go to move the snake in that direction", True, 'white')
-        instructions_x = TILE_SIZE*TILE_NUM/2
-        instructions_y = 100
-        instructions_rect = instructions_surface.get_rect(center = (instructions_x, instructions_y))
-        instructions_rect2 = instructions_surface2.get_rect(center = (instructions_x, instructions_y+100))
-        screen.blit(instructions_surface, instructions_rect)
-        screen.blit(instructions_surface2, instructions_rect2)
-
-        self.intro_title_screen_button.draw()
 
     def draw_game(self):
         self.fruit.draw()
@@ -204,7 +176,7 @@ class MAIN:
 class START_BUTTON:
     def __init__(self):
         self.button_surface = title_font.render("Start", True, 'green')
-        self.button_rect = self.button_surface.get_rect(center=(TILE_NUM*TILE_SIZE/2, TILE_SIZE*TILE_NUM/2-100))
+        self.button_rect = self.button_surface.get_rect(center=(TILE_NUM*TILE_SIZE/2, TILE_SIZE*TILE_NUM/2))
 
     def draw(self):
         screen.blit(self.button_surface, self.button_rect)
@@ -216,9 +188,9 @@ class START_BUTTON:
                 main_game.state = "PLAY"
 
 class TITLE_BUTTON:
-    def __init__(self, x=TILE_NUM*TILE_SIZE/2, y=TILE_SIZE*TILE_NUM/2 + 300):
+    def __init__(self):
         self.button_surface = button_font.render("Title Screen", True, 'green')
-        self.button_rect = self.button_surface.get_rect(center=(x,y))
+        self.button_rect = self.button_surface.get_rect(center=(TILE_NUM*TILE_SIZE/2, TILE_SIZE*TILE_NUM/2 + 200))
 
     def draw(self):
         screen.blit(self.button_surface, self.button_rect)
@@ -232,7 +204,7 @@ class TITLE_BUTTON:
 class PLAY_AGAIN_BUTTON:
     def __init__(self):
         self.button_surface = button_font.render("Play Again", True, 'green')
-        self.button_rect = self.button_surface.get_rect(center=(TILE_NUM*TILE_SIZE/2, TILE_SIZE*TILE_NUM/2 + 150))
+        self.button_rect = self.button_surface.get_rect(center=(TILE_NUM*TILE_SIZE/2, TILE_SIZE*TILE_NUM/2 + 100))
 
     def draw(self):
         screen.blit(self.button_surface, self.button_rect)
@@ -256,34 +228,21 @@ class INSTRUCTIONS_BUTTON:
         if(self.button_rect.collidepoint(pos)):
             if(pygame.mouse.get_pressed()[0]):
                 main_game.state = "INSTRUCTIONS"
-
-class EXIT_BUTTON:
-    def __init__(self):
-        self.button_surface = button_font.render("Exit", True, 'red')
-        self.button_rect = self.button_surface.get_rect(center=(TILE_NUM*TILE_SIZE/2, TILE_SIZE*TILE_NUM/2 + 250))
-
-    def draw(self):
-        screen.blit(self.button_surface, self.button_rect)
-
-    def check_click(self):
-        pos = pygame.mouse.get_pos()
-        if(self.button_rect.collidepoint(pos)):
-            if(pygame.mouse.get_pressed()[0]):
-                exit()
         
 
 
 pygame.init()
 pygame.display.set_caption("SNEK")
+TILE_SIZE, TILE_NUM = int(35), 20
 screen = pygame.display.set_mode([TILE_SIZE*TILE_NUM]*2, pygame.SCALED | pygame.FULLSCREEN)
 snake = pygame.rect.Rect([0,0,TILE_SIZE-2,TILE_SIZE-2,])
 length = 1
 snake_dir = Vector2(0, 0)
 time, time_step = 0, 100
 clock = pygame.time.Clock()
-score_font = pygame.font.Font(None, 50)
-title_font = pygame.font.Font(None, 150)
-button_font = pygame.font.Font(None, 80)
+score_font = pygame.font.Font(None, 25)
+title_font = pygame.font.Font(None, 75)
+button_font = pygame.font.Font(None, 40)
 mouse1 = Vector2(0,0)
 mouse2 = Vector2(0,0)
 
