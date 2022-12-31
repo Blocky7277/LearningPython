@@ -221,15 +221,15 @@ class PLAY_AGAIN_BUTTON:
 pygame.init()
 pygame.display.set_caption("SNEK")
 TILE_SIZE, TILE_NUM = int(35), 20
-screen = pygame.display.set_mode([TILE_SIZE*TILE_NUM]*2, pygame.FULLSCREEN)
+screen = pygame.display.set_mode([TILE_SIZE*TILE_NUM]*2, pygame.SCALED | pygame.FULLSCREEN)
 snake = pygame.rect.Rect([0,0,TILE_SIZE-2,TILE_SIZE-2,])
 length = 1
 snake_dir = Vector2(0, 0)
 time, time_step = 0, 100
 clock = pygame.time.Clock()
-score_font = pygame.font.Font("./Font/AK50.ttf", 25)
-title_font = pygame.font.Font("./Font/AK50.ttf", 75)
-button_font = pygame.font.Font("./Font/AK50.ttf", 40)
+score_font = pygame.font.Font(None, 25)
+title_font = pygame.font.Font(None, 75)
+button_font = pygame.font.Font(None, 40)
 mouse1 = Vector2(0,0)
 mouse2 = Vector2(0,0)
 
@@ -260,9 +260,12 @@ while True:
         main_game.update()
 
         # Collect Input
+        if event.type == pygame.KEYDOWN:
+            if main_game.state == "PLAY":
+                get_input()
+            if event.key == pygame.K_ESCAPE:
+                    exit()
         if main_game.state == "PLAY":
-            if event.type == pygame.KEYDOWN:
-                    get_input()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if(pygame.mouse.get_pressed()[0]):
                     mouse1 = Vector2(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
@@ -281,7 +284,7 @@ while True:
                             main_game.snek.direction = Vector2(0, -1)
                         else:
                             main_game.snek.direction = Vector2(0, 1)
-        screen.fill('black')
+        screen.fill((20,20,20))
         main_game.draw()
         pygame.display.update()
         clock.tick(200)
